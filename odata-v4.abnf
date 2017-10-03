@@ -102,10 +102,10 @@ serviceRoot = ( "https" / "http" )                    ; Note: case-insensitive
               "://" host [ ":" port ]
               "/" *( segment-nz "/" )
 
-odataRelativeUri = '$batch'                           ; Note: case-sensitive!
-                 / '$entity' "?" entityOptions
-                 / '$entity' "/" qualifiedEntityTypeName "?" entityCastOptions
-                 / '$metadata' [ "?" format ] [ context ]
+odataRelativeUri = "$batch"                           ; Note: case-sensitive!
+                 / "$entity" "?" entityOptions
+                 / "$entity" "/" qualifiedEntityTypeName "?" entityCastOptions
+                 / "$metadata" [ "?" format ] [ context ]
                  / resourcePath [ "?" queryOptions ]
 
 
@@ -123,7 +123,7 @@ resourcePath = entitySetName                  [ collectionNavigation ]
              / primitiveColFunctionImportCall [ collectionPath ]
              / primitiveFunctionImportCall    [ singlePath ]
              / crossjoin
-             / '$all'
+             / "$all"
 
 collectionNavigation = [ "/" qualifiedEntityTypeName ] [ collectionNavPath ]
 collectionNavPath    = keyPredicate [ singleNavigation ]
@@ -161,9 +161,9 @@ complexPath    = [ "/" qualifiedComplexTypeName ]
                  / boundOperation
                  )
 
-count = '/$count'
-ref   = '/$ref'
-value = '/$value'
+count = "/$count"
+ref   = "/$ref"
+value = "/$value"
 
 ; boundOperation segments can only be composed if the type of the previous segment
 ; matches the type of the first parameter of the action or function being called.
@@ -206,7 +206,7 @@ functionParameter  = parameterName EQ ( parameterAlias / primitiveLiteral )
 parameterName      = odataIdentifier
 parameterAlias     = AT odataIdentifier
 
-crossjoin = '$crossjoin' OPEN
+crossjoin = "$crossjoin" OPEN
             entitySetName *( COMMA entitySetName )
             CLOSE
 
@@ -228,7 +228,7 @@ entityCastOption  = entityIdOption
                   / expand
                   / select
 
-id = '$id' EQ IRI-in-query
+id = "$id" EQ IRI-in-query
 
 systemQueryOption = expand
                   / filter
@@ -242,7 +242,7 @@ systemQueryOption = expand
                   / skiptoken
                   / top
 
-expand            = '$expand' EQ expandItem *( COMMA expandItem )
+expand            = "$expand" EQ expandItem *( COMMA expandItem )
 expandItem        = STAR [ ref / OPEN levels CLOSE ]
                   / expandPath
                     [ ref   [ OPEN expandRefOption   *( SEMI expandRefOption   ) CLOSE ]
@@ -265,17 +265,17 @@ expandOption      = expandRefOption
                   / expand
                   / levels
 
-levels = '$levels' EQ ( oneToNine *DIGIT / 'max' )
+levels = "$levels" EQ ( oneToNine *DIGIT / "max" )
 
-filter = '$filter' EQ boolCommonExpr
+filter = "$filter" EQ boolCommonExpr
 
-orderby     = '$orderby' EQ orderbyItem *( COMMA orderbyItem )
-orderbyItem = commonExpr [ RWS ( 'asc' / 'desc' ) ]
+orderby     = "$orderby" EQ orderbyItem *( COMMA orderbyItem )
+orderbyItem = commonExpr [ RWS ( "asc" / "desc" ) ]
 
-skip = '$skip' EQ 1*DIGIT
-top  = '$top'  EQ 1*DIGIT
+skip = "$skip" EQ 1*DIGIT
+top  = "$top"  EQ 1*DIGIT
 
-format = '$format' EQ
+format = "$format" EQ
          ( "atom"
          / "json"
          / "xml"
@@ -283,24 +283,24 @@ format = '$format' EQ
          )                     ; format specific to the specific data service> or
                                ; <An IANA-defined [IANA-MMT] content type>
 
-inlinecount = '$count' EQ booleanValue
+inlinecount = "$count" EQ booleanValue
 
-search     = '$search' EQ BWS searchExpr
+search     = "$search" EQ BWS searchExpr
 searchExpr = ( OPEN BWS searchExpr BWS CLOSE
              / searchTerm
              ) [ searchOrExpr
                / searchAndExpr
                ]
 
-searchOrExpr  = RWS 'OR'  RWS searchExpr
-searchAndExpr = RWS [ 'AND' RWS ] searchExpr
+searchOrExpr  = RWS "OR"  RWS searchExpr
+searchAndExpr = RWS [ "AND" RWS ] searchExpr
 
-searchTerm   = [ 'NOT' RWS ] ( searchPhrase / searchWord )
+searchTerm   = [ "NOT" RWS ] ( searchPhrase / searchWord )
 searchPhrase = quotation-mark 1*qchar-no-AMP-DQUOTE quotation-mark
 searchWord   = 1*ALPHA ; Actually: any character from the Unicode categories L or Nl,
                        ; but not the words AND, OR, and NOT
 
-select         = '$select' EQ selectItem *( COMMA selectItem )
+select         = "$select" EQ selectItem *( COMMA selectItem )
 selectItem     = STAR
                / allOperationsInSchema
                / [ ( qualifiedEntityTypeName / qualifiedComplexTypeName ) "/" ]
@@ -325,7 +325,7 @@ qualifiedFunctionName = namespace "." function [ OPEN parameterNames CLOSE ]
 ; The names of all non-binding parameters, separated by commas
 parameterNames = parameterName *( COMMA parameterName )
 
-skiptoken = '$skiptoken' EQ 1*( qchar-no-AMP )
+skiptoken = "$skiptoken" EQ 1*( qchar-no-AMP )
 
 aliasAndValue = parameterAlias EQ parameterValue
 
@@ -342,15 +342,15 @@ customValue       = *( qchar-no-AMP )
 ;------------------------------------------------------------------------------
 
 context         = "#" contextFragment
-contextFragment = 'Collection($ref)'
-                / '$ref'
-                / 'Collection(Edm.EntityType)'
-                / 'Collection(Edm.ComplexType)'
+contextFragment = "Collection($ref)"
+                / "$ref"
+                / "Collection(Edm.EntityType)"
+                / "Collection(Edm.ComplexType)"
                 / singletonEntity [ navigation *( containmentNavigation ) [ "/" qualifiedEntityTypeName ] ] [ selectList ]
                 / qualifiedTypeName [ selectList ]
-                / entitySet ( '/$deletedEntity' / '/$link' / '/$deletedLink' )
+                / entitySet ( "/$deletedEntity" / "/$link" / "/$deletedLink" )
                 / entitySet keyPredicate "/" contextPropertyPath [ selectList ]
-                / entitySet [ selectList ] [ '/$entity' / '/$delta' ]
+                / entitySet [ selectList ] [ "/$entity" / "/$delta" ]
 
 entitySet = entitySetName *( containmentNavigation ) [ "/" qualifiedEntityTypeName ]
 
@@ -367,7 +367,7 @@ selectListItem     = STAR ; all structural properties
                      )
 selectListProperty = primitiveProperty
                    / primitiveColProperty
-                   / navigationProperty [ '+' ] [ selectList ]
+                   / navigationProperty [ "+" ] [ selectList ]
                    / selectPath [ "/" selectListProperty ]
 
 contextPropertyPath = primitiveProperty
@@ -414,7 +414,7 @@ boolCommonExpr = ( isofExpr
                  / boolParenExpr
                  ) [ andExpr / orExpr ]
 
-rootExpr = '$root/' ( entitySetName keyPredicate / singletonEntity ) [ singleNavigationExpr ]
+rootExpr = "$root/" ( entitySetName keyPredicate / singletonEntity ) [ singleNavigationExpr ]
 
 firstMemberExpr = memberExpr
                 / inscopeVariableExpr [ "/" memberExpr ]
@@ -435,7 +435,7 @@ propertyPathExpr = ( entityColNavigationProperty [ collectionNavigationExpr ]
 
 inscopeVariableExpr       = implicitVariableExpr
                           / lambdaVariableExpr ; only allowed inside a lambdaPredicateExpr
-implicitVariableExpr      = '$it'              ; references the unnamed outer variable of the query
+implicitVariableExpr      = "$it"              ; references the unnamed outer variable of the query
 lambdaVariableExpr        = odataIdentifier
 
 collectionNavigationExpr = [ "/" qualifiedEntityTypeName ]
@@ -472,8 +472,8 @@ functionExpr = namespace "."
 functionExprParameters = OPEN [ functionExprParameter *( COMMA functionExprParameter ) ] CLOSE
 functionExprParameter  = parameterName EQ ( parameterAlias / parameterValue )
 
-anyExpr = 'any' OPEN BWS [ lambdaVariableExpr BWS COLON BWS lambdaPredicateExpr ] BWS CLOSE
-allExpr = 'all' OPEN BWS   lambdaVariableExpr BWS COLON BWS lambdaPredicateExpr   BWS CLOSE
+anyExpr = "any" OPEN BWS [ lambdaVariableExpr BWS COLON BWS lambdaPredicateExpr ] BWS CLOSE
+allExpr = "all" OPEN BWS   lambdaVariableExpr BWS COLON BWS lambdaPredicateExpr   BWS CLOSE
 lambdaPredicateExpr = boolCommonExpr ; containing at least one lambdaVariableExpr
 
 methodCallExpr = indexOfMethodCallExpr
@@ -508,68 +508,68 @@ boolMethodCallExpr = endsWithMethodCallExpr
                    / containsMethodCallExpr
                    / intersectsMethodCallExpr
 
-containsMethodCallExpr   = 'contains'   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
-startsWithMethodCallExpr = 'startswith' OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
-endsWithMethodCallExpr   = 'endswith'   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
-lengthMethodCallExpr     = 'length'     OPEN BWS commonExpr BWS CLOSE
-indexOfMethodCallExpr    = 'indexof'    OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
-substringMethodCallExpr  = 'substring'  OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS [ COMMA BWS commonExpr BWS ] CLOSE
-toLowerMethodCallExpr    = 'tolower'    OPEN BWS commonExpr BWS CLOSE
-toUpperMethodCallExpr    = 'toupper'    OPEN BWS commonExpr BWS CLOSE
-trimMethodCallExpr       = 'trim'       OPEN BWS commonExpr BWS CLOSE
-concatMethodCallExpr     = 'concat'     OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
+containsMethodCallExpr   = "contains"   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
+startsWithMethodCallExpr = "startswith" OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
+endsWithMethodCallExpr   = "endswith"   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
+lengthMethodCallExpr     = "length"     OPEN BWS commonExpr BWS CLOSE
+indexOfMethodCallExpr    = "indexof"    OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
+substringMethodCallExpr  = "substring"  OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS [ COMMA BWS commonExpr BWS ] CLOSE
+toLowerMethodCallExpr    = "tolower"    OPEN BWS commonExpr BWS CLOSE
+toUpperMethodCallExpr    = "toupper"    OPEN BWS commonExpr BWS CLOSE
+trimMethodCallExpr       = "trim"       OPEN BWS commonExpr BWS CLOSE
+concatMethodCallExpr     = "concat"     OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 
-yearMethodCallExpr               = 'year'               OPEN BWS commonExpr BWS CLOSE
-monthMethodCallExpr              = 'month'              OPEN BWS commonExpr BWS CLOSE
-dayMethodCallExpr                = 'day'                OPEN BWS commonExpr BWS CLOSE
-hourMethodCallExpr               = 'hour'               OPEN BWS commonExpr BWS CLOSE
-minuteMethodCallExpr             = 'minute'             OPEN BWS commonExpr BWS CLOSE
-secondMethodCallExpr             = 'second'             OPEN BWS commonExpr BWS CLOSE
-fractionalsecondsMethodCallExpr  = 'fractionalseconds'  OPEN BWS commonExpr BWS CLOSE
-totalsecondsMethodCallExpr       = 'totalseconds'       OPEN BWS commonExpr BWS CLOSE
-dateMethodCallExpr               = 'date'               OPEN BWS commonExpr BWS CLOSE
-timeMethodCallExpr               = 'time'               OPEN BWS commonExpr BWS CLOSE
-totalOffsetMinutesMethodCallExpr = 'totaloffsetminutes' OPEN BWS commonExpr BWS CLOSE
+yearMethodCallExpr               = "year"               OPEN BWS commonExpr BWS CLOSE
+monthMethodCallExpr              = "month"              OPEN BWS commonExpr BWS CLOSE
+dayMethodCallExpr                = "day"                OPEN BWS commonExpr BWS CLOSE
+hourMethodCallExpr               = "hour"               OPEN BWS commonExpr BWS CLOSE
+minuteMethodCallExpr             = "minute"             OPEN BWS commonExpr BWS CLOSE
+secondMethodCallExpr             = "second"             OPEN BWS commonExpr BWS CLOSE
+fractionalsecondsMethodCallExpr  = "fractionalseconds"  OPEN BWS commonExpr BWS CLOSE
+totalsecondsMethodCallExpr       = "totalseconds"       OPEN BWS commonExpr BWS CLOSE
+dateMethodCallExpr               = "date"               OPEN BWS commonExpr BWS CLOSE
+timeMethodCallExpr               = "time"               OPEN BWS commonExpr BWS CLOSE
+totalOffsetMinutesMethodCallExpr = "totaloffsetminutes" OPEN BWS commonExpr BWS CLOSE
 
-minDateTimeMethodCallExpr = 'mindatetime(' BWS ')'
-maxDateTimeMethodCallExpr = 'maxdatetime(' BWS ')'
-nowMethodCallExpr         = 'now(' BWS ')'
+minDateTimeMethodCallExpr = "mindatetime(" BWS ")"
+maxDateTimeMethodCallExpr = "maxdatetime(" BWS ")"
+nowMethodCallExpr         = "now(" BWS ")"
 
-roundMethodCallExpr   = 'round'   OPEN BWS commonExpr BWS CLOSE
-floorMethodCallExpr   = 'floor'   OPEN BWS commonExpr BWS CLOSE
-ceilingMethodCallExpr = 'ceiling' OPEN BWS commonExpr BWS CLOSE
+roundMethodCallExpr   = "round"   OPEN BWS commonExpr BWS CLOSE
+floorMethodCallExpr   = "floor"   OPEN BWS commonExpr BWS CLOSE
+ceilingMethodCallExpr = "ceiling" OPEN BWS commonExpr BWS CLOSE
 
-distanceMethodCallExpr   = 'geo.distance'   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
-geoLengthMethodCallExpr  = 'geo.length'     OPEN BWS commonExpr BWS CLOSE
-intersectsMethodCallExpr = 'geo.intersects' OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
+distanceMethodCallExpr   = "geo.distance"   OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
+geoLengthMethodCallExpr  = "geo.length"     OPEN BWS commonExpr BWS CLOSE
+intersectsMethodCallExpr = "geo.intersects" OPEN BWS commonExpr BWS COMMA BWS commonExpr BWS CLOSE
 
 boolParenExpr = OPEN BWS boolCommonExpr BWS CLOSE
 parenExpr     = OPEN BWS commonExpr     BWS CLOSE
 
-andExpr = RWS 'and' RWS boolCommonExpr
-orExpr  = RWS 'or'  RWS boolCommonExpr
+andExpr = RWS "and" RWS boolCommonExpr
+orExpr  = RWS "or"  RWS boolCommonExpr
 
-eqExpr = RWS 'eq' RWS commonExpr
-neExpr = RWS 'ne' RWS commonExpr
-ltExpr = RWS 'lt' RWS commonExpr
-leExpr = RWS 'le' RWS commonExpr
-gtExpr = RWS 'gt' RWS commonExpr
-geExpr = RWS 'ge' RWS commonExpr
+eqExpr = RWS "eq" RWS commonExpr
+neExpr = RWS "ne" RWS commonExpr
+ltExpr = RWS "lt" RWS commonExpr
+leExpr = RWS "le" RWS commonExpr
+gtExpr = RWS "gt" RWS commonExpr
+geExpr = RWS "ge" RWS commonExpr
 
-hasExpr = RWS 'has' RWS enum
+hasExpr = RWS "has" RWS enum
 
-addExpr = RWS 'add' RWS commonExpr
-subExpr = RWS 'sub' RWS commonExpr
-mulExpr = RWS 'mul' RWS commonExpr
-divExpr = RWS 'div' RWS commonExpr
-modExpr = RWS 'mod' RWS commonExpr
+addExpr = RWS "add" RWS commonExpr
+subExpr = RWS "sub" RWS commonExpr
+mulExpr = RWS "mul" RWS commonExpr
+divExpr = RWS "div" RWS commonExpr
+modExpr = RWS "mod" RWS commonExpr
 
 negateExpr = "-" BWS commonExpr
 
-notExpr = 'not' RWS boolCommonExpr
+notExpr = "not" RWS boolCommonExpr
 
-isofExpr = 'isof' OPEN BWS [ commonExpr BWS COMMA BWS ] qualifiedTypeName BWS CLOSE
-castExpr = 'cast' OPEN BWS [ commonExpr BWS COMMA BWS ] qualifiedTypeName BWS CLOSE
+isofExpr = "isof" OPEN BWS [ commonExpr BWS COMMA BWS ] qualifiedTypeName BWS CLOSE
+castExpr = "cast" OPEN BWS [ commonExpr BWS COMMA BWS ] qualifiedTypeName BWS CLOSE
 
 
 ;------------------------------------------------------------------------------
@@ -657,9 +657,9 @@ value-separator = BWS COMMA BWS
 
 primitiveLiteralInJSON = stringInJSON
                        / numberInJSON
-                       / 'true'
-                       / 'false'
-                       / 'null'
+                       / "true"
+                       / "false"
+                       / "null"
 
 stringInJSON = quotation-mark *charInJSON quotation-mark
 charInJSON   = qchar-unescaped
@@ -667,12 +667,12 @@ charInJSON   = qchar-unescaped
              / escape ( quotation-mark
                       / escape
                       / ( "/" / "%2F" ) ; solidus         U+002F - literal form is allowed in the query part of a URL
-                      / 'b'             ; backspace       U+0008
-                      / 'f'             ; form feed       U+000C
-                      / 'n'             ; line feed       U+000A
-                      / 'r'             ; carriage return U+000D
-                      / 't'             ; tab             U+0009
-                      / 'u' 4HEXDIG     ;                 U+XXXX
+                      / "b"             ; backspace       U+0008
+                      / "f"             ; form feed       U+000C
+                      / "n"             ; line feed       U+000A
+                      / "r"             ; carriage return U+000D
+                      / "t"             ; tab             U+0009
+                      / "u" 4HEXDIG     ;                 U+XXXX
                       )
 
 qchar-JSON-special = SP / ":" / "{" / "}" / "[" / "]" ; some agents put these unencoded into the query part of a URL
@@ -696,7 +696,7 @@ singleQualifiedTypeName = qualifiedEntityTypeName
                         / primitiveTypeName
 
 qualifiedTypeName = singleQualifiedTypeName
-                  / 'Collection' OPEN singleQualifiedTypeName CLOSE
+                  / "Collection" OPEN singleQualifiedTypeName CLOSE
 
 qualifiedEntityTypeName     = namespace "." entityTypeName
 qualifiedComplexTypeName    = namespace "." complexTypeName
@@ -721,34 +721,34 @@ odataIdentifier             = identifierLeadingCharacter *127identifierCharacter
 identifierLeadingCharacter  = ALPHA / "_"         ; plus Unicode characters from the categories L or Nl
 identifierCharacter         = ALPHA / "_" / DIGIT ; plus Unicode characters from the categories L, Nl, Nd, Mn, Mc, Pc, or Cf
 
-primitiveTypeName = 'Edm.' ( 'Binary'
-                           / 'Boolean'
-                           / 'Byte'
-                           / 'Date'
-                           / 'DateTimeOffset'
-                           / 'Decimal'
-                           / 'Double'
-                           / 'Duration'
-                           / 'Guid'
-                           / 'Int16'
-                           / 'Int32'
-                           / 'Int64'
-                           / 'SByte'
-                           / 'Single'
-                           / 'Stream'
-                           / 'String'
-                           / 'TimeOfDay'
+primitiveTypeName = "Edm." ( "Binary"
+                           / "Boolean"
+                           / "Byte"
+                           / "Date"
+                           / "DateTimeOffset"
+                           / "Decimal"
+                           / "Double"
+                           / "Duration"
+                           / "Guid"
+                           / "Int16"
+                           / "Int32"
+                           / "Int64"
+                           / "SByte"
+                           / "Single"
+                           / "Stream"
+                           / "String"
+                           / "TimeOfDay"
                            / abstractSpatialTypeName [ concreteSpatialTypeName ]
                            )
-abstractSpatialTypeName = 'Geography'
-                        / 'Geometry'
-concreteSpatialTypeName = 'Collection'
-                        / 'LineString'
-                        / 'MultiLineString'
-                        / 'MultiPoint'
-                        / 'MultiPolygon'
-                        / 'Point'
-                        / 'Polygon'
+abstractSpatialTypeName = "Geography"
+                        / "Geometry"
+concreteSpatialTypeName = "Collection"
+                        / "LineString"
+                        / "MultiLineString"
+                        / "MultiPoint"
+                        / "MultiPolygon"
+                        / "Point"
+                        / "Polygon"
 
 primitiveProperty       = primitiveKeyProperty / primitiveNonKeyProperty
 primitiveKeyProperty    = odataIdentifier
@@ -853,13 +853,13 @@ primitiveValue = booleanValue
                ; - any XML string for strings in Atom and CSDL documents
                ; - any JSON string for JSON documents
 
-nullValue = 'null'
+nullValue = "null"
 
 ; base64url encoding according to http://tools.ietf.org/html/rfc4648#section-5
 binary      = "binary" SQUOTE binaryValue SQUOTE
 binaryValue = *(4base64char) [ base64b16  / base64b8 ]
-base64b16   = 2base64char ( 'A' / 'E' / 'I' / 'M' / 'Q' / 'U' / 'Y' / 'c' / 'g' / 'k' / 'o' / 's' / 'w' / '0' / '4' / '8' )   [ "=" ]
-base64b8    = base64char ( 'A' / 'Q' / 'g' / 'w' ) [ "==" ]
+base64b16   = 2base64char ( "A" / "E" / "I" / "M" / "Q" / "U" / "Y" / "c" / "g" / "k" / "o" / "s" / "w" / "0" / "4" / "8" )   [ "=" ]
+base64b8    = base64char ( "A" / "Q" / "g" / "w" ) [ "==" ]
 base64char  = ALPHA / DIGIT / "-" / "_"
 
 booleanValue = "true" / "false"
@@ -868,7 +868,7 @@ decimalValue = [SIGN] 1*DIGIT ["." 1*DIGIT]
 
 doubleValue = decimalValue [ "e" [SIGN] 1*DIGIT ] / nanInfinity ; IEEE 754 binary64 floating-point number (15-17 decimal digits)
 singleValue = doubleValue                                       ; IEEE 754 binary32 floating-point number (6-9 decimal digits)
-nanInfinity = 'NaN' / '-INF' / 'INF'
+nanInfinity = "NaN" / "-INF" / "INF"
 
 guidValue = 8HEXDIG "-" 4HEXDIG "-" 4HEXDIG "-" 4HEXDIG "-" 12HEXDIG
 
@@ -942,7 +942,7 @@ multiPolygonLiteral     = "MultiPolygon(" [ polygonData *( COMMA polygonData ) ]
 geographyPoint   = geographyPrefix SQUOTE fullPointLiteral SQUOTE
 fullPointLiteral = sridLiteral pointLiteral
 sridLiteral      = "SRID" EQ 1*5DIGIT SEMI
-pointLiteral     ="Point" pointData
+pointLiteral     = "Point" pointData
 pointData        = OPEN positionLiteral CLOSE
 positionLiteral  = doubleValue SP doubleValue  ; longitude, then latitude
 
@@ -1016,7 +1016,7 @@ maxpagesizePreference = "odata.maxpagesize" EQ-h oneToNine *DIGIT
 
 respondAsyncPreference = "respond-async"
 
-returnPreference = "return" EQ-h ( 'representation' / 'minimal' )
+returnPreference = "return" EQ-h ( "representation" / "minimal" )
 
 trackChangesPreference = "odata.track-changes"
 
